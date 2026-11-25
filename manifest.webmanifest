@@ -1,0 +1,23 @@
+{
+  "id": "./",
+  "name": "Catatan Asupan",
+  "short_name": "Asupan",
+  "description": "Catat makanan harian, pantau gizi, dan telusuri pemicu asam urat, tensi, kolesterol, dan gula darah.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef3ef",
+  "theme_color": "#12634a",
+  "categories": ["health", "food", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Catat makanan", "url": "./?add=1", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Catat kesehatan", "url": "./?gout=1", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
