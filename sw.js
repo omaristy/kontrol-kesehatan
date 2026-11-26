@@ -1,6 +1,6 @@
 /* Service worker: aplikasi tetap bisa dibuka tanpa internet.
  * Ubah angka versi di bawah setiap kali Anda mengunggah pembaruan ke GitHub. */
-const CACHE = 'asupan-v4';
+const CACHE = 'asupan-v5';
 const PRECACHE = [
   './', './index.html', './manifest.webmanifest', './css/style.css',
   './js/config.js', './js/foods.js', './js/core.js', './js/ui.js', './js/views.js', './js/main.js',

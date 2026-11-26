@@ -6,6 +6,7 @@ Aplikasi web untuk mencatat makanan harian, menghitung kalori, protein, karbo, l
 - **Hari ini**: gauge purin vs batas harian, ringkasan gizi, air putih, catatan per waktu makan.
 - **Riwayat**: grafik 7/14/30 hari, daftar per hari, cari "kapan terakhir makan X".
 - **Kesehatan**: pilih Asam urat, Tensi, Kolesterol, atau Gula darah. Catat serangan atau hasil ukur; aplikasi menampilkan makanan 1–7 hari sebelumnya, pemicu paling mungkin (purin, natrium, lemak jenuh+kolesterol, atau gula), faktor lain seperti alkohol, dan pola berulang dari semua kejadian tidak normal.
+- **Saran**: bila hasil tensi, kolesterol, gula darah, atau asam urat tinggi, muncul saran "Yang bisa dilakukan" (sekarang, kurangi, pilih ini, kapan ke dokter) lengkap dengan makanan dari catatan Anda sendiri dan peringatan darurat untuk nilai sangat tinggi atau rendah. Di Hari Ini muncul "Saran hari ini" bila asupan melewati batas.
 - **Makanan**: 109 makanan Indonesia bawaan + tambah makanan sendiri.
 - Ekspor CSV, cadangan/pemulihan JSON.
 

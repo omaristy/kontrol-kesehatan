@@ -45,6 +45,102 @@
     return '<div class="empty"><b>' + esc(title) + '</b><p>' + esc(text) + '</p>' + (btn || '') + '</div>';
   };
 
+  /* ====================== SARAN ====================== */
+  const li = function (arr) { return '<ul class="adv-list">' + arr.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>'; };
+  const advBlock = function (title, arr) { return arr && arr.length ? '<h4 class="adv-h">' + title + '</h4>' + li(arr) : ''; };
+  const names = function (arr) { return arr.map(function (x) { return '<b>' + esc(x) + '</b>'; }).join(', '); };
+
+  /* peringatan darurat (null bila tidak ada) */
+  function urgentText(h) {
+    if (h.kind === 'tensi' && (+h.sys >= 180 || +h.dia >= 120))
+      return 'Tensi sangat tinggi. Duduk tenang dan ukur ulang setelah 5 menit. Bila tetap setinggi ini, atau disertai nyeri dada, sesak napas, lemah atau baal pada satu sisi tubuh, bicara pelo, sakit kepala hebat, atau pandangan kabur, <b>segera ke IGD atau hubungi 119</b>.';
+    if (h.kind === 'gula' && +h.glu >= 300)
+      return 'Gula darah sangat tinggi. <b>Segera hubungi dokter atau ke IGD</b>, terutama bila Anda sangat haus, sering buang air kecil, lemas, mual atau muntah, napas berbau buah, atau bingung.';
+    if (h.kind === 'gula' && +h.glu > 0 && +h.glu < 70)
+      return 'Gula darah rendah. Segera minum sekitar setengah gelas jus atau air gula (sekitar 3 sendok teh gula), tunggu 15 menit, lalu ukur ulang. Bila masih rendah, ulangi. Bila pingsan atau tidak bisa menelan, <b>segera cari pertolongan medis</b>.';
+    if (h.kind === 'nyeri' && /demam/i.test(h.note || ''))
+      return 'Nyeri sendi disertai demam perlu diperiksa dokter hari ini untuk menyingkirkan infeksi sendi.';
+    return null;
+  }
+
+  const GENERAL = {
+    nyeri: {
+      now: ['Istirahatkan sendi yang nyeri dan tinggikan posisinya.', 'Kompres dingin (dibungkus kain) 15–20 menit, beberapa kali sehari.', 'Minum air putih minimal 8 gelas (2 liter) sehari, kecuali dokter membatasi cairan.', 'Minum obat hanya sesuai resep atau anjuran dokter. Jangan memulai atau menghentikan sendiri obat penurun asam urat saat serangan.'],
+      cut: ['Alkohol (terutama bir), jeroan, sarden, ikan asin dan teri, melinjo dan emping, serta daging merah sampai nyeri reda.', 'Minuman manis dan sirup.'],
+      pick: ['Nasi, kentang, ubi, tahu, telur, sayur, buah, susu rendah lemak atau yogurt.', 'Air putih sepanjang hari.'],
+      doctor: ['Ke dokter atau IGD bila nyeri disertai demam, sendi sangat merah dan panas, atau tidak membaik dalam 2–3 hari.', 'Setelah reda, periksakan kadar asam urat. Serangan berulang biasanya perlu obat pencegah dari dokter, bukan hanya diet.'],
+    },
+    lab: {
+      now: ['Minum air putih minimal 8 gelas sehari.', 'Turunkan berat badan bertahap bila berlebih. Hindari puasa ketat atau diet kilat karena bisa memicu serangan.'],
+      cut: ['Jeroan, sarden, ikan asin dan teri, melinjo dan emping, daging merah, alkohol, dan minuman manis.'],
+      pick: ['Sayur, buah, tahu, telur, nasi, kentang, susu rendah lemak.'],
+      doctor: ['Bawa catatan ini ke dokter. Bila pernah serangan atau kadar tetap tinggi, obat penurun asam urat sering diperlukan selain diet.'],
+    },
+    tensi: {
+      now: ['Duduk tenang 5 menit, lengan sejajar jantung, lalu ukur ulang 2 kali dan catat rata-ratanya.', 'Hindari kopi, rokok, dan makanan asin hari ini.', 'Bila Anda memakai obat tensi, minum sesuai resep. Jangan menambah atau menghentikan sendiri.'],
+      cut: ['Garam dan makanan asin: ikan asin, kerupuk, mie instan, makanan kemasan, kuah, dan kecap. Target natrium di bawah 2.000 mg per hari (1.500 mg bila dokter menganjurkan).', 'Alkohol dan rokok.'],
+      pick: ['Sayur dan buah, ikan kukus atau panggang, tempe, tahu. Buah dan sayur kaya kalium (pisang, bayam, alpukat) membantu, kecuali dokter membatasi kalium (misalnya pada sakit ginjal).', 'Olahraga ringan sekitar 30 menit hampir setiap hari bila dokter mengizinkan.'],
+      doctor: ['Periksakan ke dokter bila tensi 140/90 atau lebih terukur di beberapa hari berbeda, agar dinilai perlu obat atau tidak.', 'Segera ke IGD bila tensi tinggi disertai nyeri dada, sesak, lemah satu sisi, atau bicara pelo.'],
+    },
+    kolesterol: {
+      now: ['Bawa hasil lab ke dokter untuk menentukan cukup dengan ubah gaya hidup atau perlu obat.', 'Mulai dari makanan: kurangi gorengan dan jeroan mulai hari ini.'],
+      cut: ['Gorengan, santan, kulit ayam, daging berlemak, jeroan, dan kuning telur berlebih.', 'Lemak trans: gorengan pinggir jalan, margarin, dan kue kemasan.'],
+      pick: ['Oatmeal, tempe, tahu, kacang-kacangan, sayur, buah, dan ikan. Masak dengan cara rebus, kukus, atau panggang.', 'Olahraga sedang sekitar 150 menit per minggu.'],
+      doctor: ['Cek ulang kolesterol (puasa 8–12 jam) setelah sekitar 3 bulan mengubah pola makan, atau sesuai dokter.', 'Segera ke dokter bila ada nyeri dada atau sesak napas.'],
+    },
+    gula: {
+      now: ['Minum air putih dan jalan kaki ringan 10–15 menit setelah makan bila nyaman.', 'Ukur ulang sesuai anjuran dokter dan catat.', 'Bila memakai obat atau insulin, ikuti dosis dari dokter. Jangan mengubahnya sendiri.'],
+      cut: ['Minuman manis, sirup, teh atau kopi bergula, kue, dan gorengan bertepung.', 'Kurangi porsi nasi putih, mie, dan roti. Ganti sebagian dengan sayur.'],
+      pick: ['Sayur banyak, protein (ikan, tempe, tahu, telur), nasi merah atau oatmeal dalam porsi terukur, dan buah utuh (bukan jus).'],
+      doctor: ['Gula puasa 126 mg/dL atau lebih, atau gula sewaktu 200 atau lebih pada pengukuran berulang, perlu diperiksa dokter untuk diagnosis.'],
+    },
+  };
+
+  function adviceHtml(ev, ck, A) {
+    const lvl = NA.evLevel(ev), urgent = urgentText(ev);
+    let h = '';
+    if (urgent) h += '<section class="alert-urgent" role="alert"><b>Perhatian</b><p>' + urgent + '</p></section>';
+    if (lvl === 'ok' && !urgent) {
+      return h + '<section class="card adv"><h3>Saran</h3><p>Hasil ini masih dalam batas normal umum. Pertahankan pola makan dan tetap catat secara rutin, terutama bila Anda punya riwayat penyakit ini.</p></section>';
+    }
+    if (lvl === 'ok') return h;
+    const g = GENERAL[ev.kind]; if (!g) return h;
+    const cut = g.cut.slice(), pick = g.pick.slice();
+    if (A && A.hasData && A.top.length) {
+      const own = A.top.slice(0, 3).map(function (m) { return m.name; });
+      cut.unshift('<b>Dari catatan Anda</b>, yang paling berpengaruh sebelum hasil ini: ' + names(own) + '.' + (A.alk.n ? ' Anda juga mencatat alkohol.' : ''));
+    }
+    if (ev.kind === 'kolesterol') {
+      if (+ev.hdl > 0 && +ev.hdl < 40) pick.push('HDL rendah: rutin olahraga, berhenti merokok, dan pilih lemak sehat (ikan, alpukat, kacang dalam porsi kecil).');
+      if (+ev.tg >= 150) cut.push('Trigliserida tinggi: kurangi gula, nasi atau tepung berlebih, dan alkohol.');
+    }
+    h += '<section class="card adv"><h3>Yang bisa dilakukan</h3>' +
+      advBlock('Sekarang', g.now) + advBlock('Kurangi atau hindari', cut) + advBlock('Pilih ini', pick) + advBlock('Temui dokter bila', g.doctor) +
+      '<p class="foot">Saran umum untuk membantu, bukan pengganti pemeriksaan dan anjuran dokter Anda.</p></section>';
+    return h;
+  }
+
+  /* saran di halaman Hari ini bila ada asupan yang melewati batas */
+  const OVER = [
+    ['pu', 'Purin', 'mg', 'Hindari jeroan, seafood, dan daging merah sisa hari ini. Pilih tahu, telur, nasi, dan sayur, serta minum air putih lebih banyak.'],
+    ['na', 'Natrium (garam)', 'mg', 'Hindari makanan asin dan olahan (ikan asin, kerupuk, mie instan, kuah, kecap) sisa hari ini. Tambah sayur dan buah, dan minum air putih.'],
+    ['ch', 'Kolesterol', 'mg', 'Hindari jeroan, kuning telur, dan gorengan sisa hari ini. Pilih makanan kukus, rebus, atau panggang.'],
+    ['sf', 'Lemak jenuh', 'g', 'Kurangi gorengan, santan, kulit ayam, dan daging berlemak. Pilih ikan, tempe, tahu, dan sayur.'],
+    ['s', 'Gula', 'g', 'Hindari minuman manis dan kue sisa hari ini. Ganti dengan air putih atau teh tawar.'],
+  ];
+  function daySuggest(t, tg, food) {
+    const rows = OVER.filter(function (o) { return tg[o[0]] > 0 && t[o[0]] > tg[o[0]]; });
+    if (!rows.length) return '';
+    return '<section class="card adv"><h3>Saran hari ini</h3>' + rows.map(function (o) {
+      const k = o[0], map = {};
+      food.forEach(function (e) { map[e.name] = (map[e.name] || 0) + (+e[k] || 0); });
+      const top = Object.keys(map).map(function (n) { return [n, map[n]]; }).filter(function (x) { return x[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 2);
+      return '<div class="adv-item"><b>' + o[1] + ' ' + fmt(t[k], NA.INT[k] ? 0 : 1) + ' ' + o[2] + ', lewat ' + fmt(t[k] - tg[k], NA.INT[k] ? 0 : 1) + ' dari batas</b>' +
+        (top.length ? '<small>Sumber terbesar: ' + top.map(function (x) { return esc(x[0]) + ' (' + fmt(x[1], NA.INT[k] ? 0 : 1) + ' ' + o[2] + ')'; }).join(', ') + '</small>' : '') +
+        '<p>' + o[3] + '</p></div>';
+    }).join('') + '<p class="foot">Saran umum, bukan pengganti anjuran dokter.</p></section>';
+  }
+
   /* ====================== HARI INI ====================== */
   function viewToday() {
     const d = S.date, all = q.entriesOn(d), food = all.filter(function (e) { return !q.isWater(e); });
@@ -76,6 +172,7 @@
         : '<p class="muted center">Catat makanan pertama hari ini untuk melihat sumber purinnya.</p>') +
       '</section>';
 
+    h += daySuggest(t, tg, food);
     h += '<section class="card"><div class="macros">' + MACROS.map(function (m) {
       const v = t[m[0]], target = tg[m[0]] || 0;
       const pct = target ? Math.min(v / target * 100, 100) : 0;
@@ -117,7 +214,6 @@
 
     h += '<section class="card cta"><div><b>Merasa sakit atau habis cek kesehatan?</b><small>Catat asam urat, tensi, kolesterol, atau gula darah, lalu lihat makanan yang mungkin berpengaruh.</small></div>' +
       '<button class="btn warn" data-act="new-health" data-kind="nyeri">Catat</button></section>';
-    h += '<button class="fab" data-act="add-meal" data-meal="" aria-label="Catat makanan">' + NA.icon('plus') + '<span>Catat makanan</span></button>';
     return h;
   }
 
@@ -267,6 +363,8 @@
       (ev.note ? '<p class="note">' + esc(ev.note) + '</p>' : '') +
       '<div class="field-l">Lihat makanan sebelum kejadian</div>' +
       NA.seg('g-win', S.gWin, [[1, '1 hari'], [2, '2 hari'], [3, '3 hari'], [5, '5 hari'], [7, '7 hari']]) + '</section>';
+
+    h += adviceHtml(ev, ck, A);
 
     if (!A.hasData) {
       h += emptyBox('Belum ada catatan makan di rentang ini', 'Tidak ada makanan tercatat pada ' + S.gWin + ' hari sebelum kejadian. Coba perluas rentang, atau tambahkan catatan untuk tanggal tersebut.',
